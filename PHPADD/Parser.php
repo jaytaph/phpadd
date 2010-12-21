@@ -43,36 +43,25 @@ class PHPADD_Parser
 		$mess = new PHPADD_Result_Class($this->reflection);
 
 		foreach ($this->reflection->getMethods($filter->getLevel()) as $method) {
-			/* @var $method ReflectionMethod */
+			/** @var $method ReflectionMethod */
 
 			if ($this->reflection->name !== $method->getDeclaringClass()->name) {
 				// is not in this class
 				continue;
 			}
 
+			$issues = array();
 			if ($this->isDocBlockMissing($method)) {
-				$mess->addMissing($this->createMissing($method));
+				$issues[] = new PHPADD_Result_Mess_Detail_Docblock(null, null, new StdClass());
 			} else {
-				$errors = $this->validateDocBlock($method);
-				if (count($errors) > 0) {
-					$mess->addOutdated($this->createOutdated($method, $errors));
-				} else {
-					$mess->countRegular($method);
-				}
+				$issues = $this->validateDocBlock($method);
 			}
+
+			$block = new PHPADD_Result_Method($method, $issues);
+			$mess->addMethod($block);
 		}
 
 		return $mess;
-	}
-
-	private function createMissing(ReflectionMethod $method)
-	{
-		return new PHPADD_Result_Mess_MissingBlock($method, array());
-	}
-
-	private function createOutdated(ReflectionMethod $method, $detail)
-	{
-		return new PHPADD_Result_Mess_OutdatedBlock($method, $detail);
 	}
 
 	private function isDocBlockMissing(ReflectionMethod $method)
@@ -86,19 +75,20 @@ class PHPADD_Parser
 
 		foreach ($method->getParameters() as $parameter)
 		{
-			/* @var $parameter ReflectionParameter */
-			$name = '$' . $parameter->getName();
+			$param = new StdClass();
+			$param->name = '$' . $parameter->getName();
 
 			if ($parameter->isArray()) {
-				$params[] = "array $name";
+				$param->type = 'array';
 			} else {
 				$type = $parameter->getClass();
 				if ($type) {
-					$params[] = "{$type->getName()} $name";
+					$param->type = $type->getName();
 				} else {
-					$params[] = "$name";
+					$param->type = null;
 				}
 			}
+			$params[] = $param;
 		}
 
 		return $params;
@@ -114,13 +104,18 @@ class PHPADD_Parser
 		if (isset($annotations['param'])) {
 			foreach ($annotations['param'] as $parameter)
 			{
+				// @TODO: make sure it works when we only have "@param <type>"
 				list($type, $name) = preg_split("/[\s]+/", $parameter);
 
+				$param = new StdClass();
 				if (!in_array($type, $excluded)) {
-					$params[] = "$type $name";
+					$param->type = $type;
+					$param->name = $name;
 				} else {
-					$params[] = "$name";
+					$param->type = null;
+					$param->name = $name;
 				}
+				$params[] = $param;
 			}
 		}
 
@@ -128,38 +123,57 @@ class PHPADD_Parser
 	}
 
 	/**
-	 * Check if the given method has the right docblock.
+	 * 
 	 *
 	 * @param ReflectionMethod $method
 	 * @return array Issues in the docblock
 	 */
 	public function validateDocBlock(ReflectionMethod $method)
 	{
-		$errors = array();
+		$issues = array();
 
-		$phpIssues = $this->getPhpParams($method);
-		$docIssues = $this->getDocBlockParams($method);
+		$phpParams = $this->getPhpParams($method);
+		$docParams = $this->getDocBlockParams($method);
 
-		$missing = array_values(array_diff($phpIssues, $docIssues));
-		foreach ($missing as $param) {
-			$errors[] = $this->createError('missing-param', $param);
+		// php parameters are leading
+		foreach ($phpParams as $phpIndex => $phpParam) {
+			$found = false;
+			foreach ($docParams as $docIndex => $docParam) {
+				if ($phpParam == $docParam)
+				{
+					// Found the correct parameter, but still need to find out if it's in the right order..
+					if ($phpIndex != $docIndex) {
+						$issues[] = new PHPADD_Result_Mess_Detail_Order($phpIndex, $docIndex, $phpParam); 
+						break;
+					}
+					$found = true;
+					break;
+				}
+			}
+
+			if (! $found) {
+				$issues[] = new PHPADD_Result_Mess_Detail_Missing($phpIndex, null, $phpParam);
+			}
 		}
 
-		$unexpected = array_values(array_diff($docIssues, $phpIssues));
-		foreach ($unexpected as $param) {
-			$errors[] = $this->createError('unexpected-param', $param);
+
+		foreach ($docParams as $docIndex => $docParam) {
+			$found = false;
+			foreach ($phpParams as $phpIndex => $phpParam) {
+				if ($docParam == $phpParam) {
+					$found = true;
+					break;
+				}
+			}
+
+			if (! $found) {
+				$issues[] = new PHPADD_Result_Mess_Detail_Unexpected(null, $docIndex, $docParam);
+			}
 		}
 
-		return $errors;
+		return $issues;
 	}
 
-	private function createError($type, $name)
-	{
-		return array(
-			'type' => $type,
-			'name' => $name
-		);
-	}
 
 	private function parseAnnotations($docblock)
 	{

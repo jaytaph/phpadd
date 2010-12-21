@@ -24,9 +24,7 @@
 
 class PHPADD_Result_Class
 {
-	private $regulars = 0;
-	private $missings = array();
-	private $outdates = array();
+	private $methods = array();
 	private $reflection;
 
 	function __construct(ReflectionClass $reflection) {
@@ -41,45 +39,71 @@ class PHPADD_Result_Class
 		return $this->reflection->getStartLine();
 	}
 
-	public function countRegular()
+	public function methodCount()
 	{
-		$this->regulars++;
+		return count($this->methods);
 	}
 
-	public function addMissing(PHPADD_Result_Mess_MissingBlock $mess)
+	public function addMethod(PHPADD_Result_Method $method)
 	{
-		$this->missings[] = $mess;
-	}
-
-	public function addOutdated(PHPADD_Result_Mess_OutdatedBlock $mess)
-	{
-		$this->outdates[] = $mess;
+		$this->methods[] = $method;
 	}
 
 	public function getMethods() {
-		return array_merge ($this->missings, $this->outdates);
+		return $this->methods;
 	}
 
 	public function getMissingBlocks()
 	{
-		return $this->missings;
+		return $this->_getBlockCount(PHPADD_Result_Mess_Detail_Abstract::MISSING_PARAM);
 	}
 
 	public function getOutdatedBlocks()
 	{
-		return $this->outdates;
+		return $this->_getBlockCount(PHPADD_Result_Mess_Detail_Abstract::UNEXPECTED_PARAM);
 	}
 
+	public function getUnorderedBlocks()
+	{
+		return $this->_getBlockCount(PHPADD_Result_Mess_Detail_Abstract::WRONG_ORDER);
+	}
+
+	public function getNodocblockBlocks()
+	{
+		return $this->_getBlockCount(PHPADD_Result_Mess_Detail_Abstract::MISSING_DOCBLOCK);
+	}
+	
 	public function getRegularBlocks()
 	{
-		return $this->regulars;
+		$count = 0;
+		foreach ($this->methods as $method) {
+			if ($method->isClean())
+			{
+				$count++;
+			}
+		}
+		return $count;
+	}
+
+	protected function _getBlockCount($type) {
+		print "_getBlockCount $type\n";
+		$count = 0;
+		foreach ($this->methods as $method) {
+			print "method:".$this->getName()."::".$method.":\n";
+			foreach ($method->getIssues() as $issue) {
+				if ($issue->getType() == $type) {
+					$count++;
+				}
+			}
+		}
+		return $count;
 	}
 
 	public function isClean()
 	{
-		$noMissings = count($this->missings) == 0;
-		$noOutdated = count($this->outdates) == 0;
-
-		return $noMissings && $noOutdated;
+		foreach ($this->getMethods() as $method) {
+			if (! $method->isClean()) return false;
+		}
+		return true;
 	}
 }

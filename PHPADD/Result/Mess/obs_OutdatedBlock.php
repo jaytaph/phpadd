@@ -18,41 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package phpadd
- * @author  Joshua Thijssen
+ * @author  Francesco Montefoschi
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-class PHPADD_Result_File
+class PHPADD_Result_Mess_OutdatedBlock extends PHPADD_Result_Mess_Abstract
 {
-	protected $classes = array();
-	protected $filename;
 
-	public function __construct($filename) {
-		$this->filename = $filename;
-	}
-
-	public function getName() {
-		return $this->filename;
-	}
-
-	public function getCount() {
-		return count($this->classes);
-	}
-
-	public function getClasses() {
-		return $this->classes;
-	}
-
-	public function isClean() {
-		foreach ($this->getClasses() as $class) {
-			if (! $class->isClean()) return false;
-		}
-		return true;
-	}
-	
-	public function addClassResult(PHPADD_Result_Class $mess)
+	public function toList()
 	{
-		$this->classes[] = $mess;
-	}
+		$list = array();
 
+		foreach ($this->getDetail() as $issue) {
+			$list[] =  $this->getType($issue['type']) . ": - <code>{$issue['name']}</code>";
+		}
+
+		return $list;
+	}
 }

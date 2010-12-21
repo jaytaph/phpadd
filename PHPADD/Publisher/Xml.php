@@ -36,12 +36,18 @@ class PHPADD_Publisher_Xml extends PHPADD_Publisher_Abstract
 	{
 		foreach ($mess->getFiles() as $file) {
 			$attributes = array ("name" => $file->getName());
+			if ($file->isClean()) {
+				$attributes['clean'] = true;
+			}
 			$file_element = $this->createXMLElement('file', $attributes);
 
 			foreach ($file->getClasses() as $class) {
 				$attributes = array ();
 				$attributes['name'] = $class->getName();
 				$attributes['line'] = $class->getStartline();
+				if ($class->isClean()) {
+					$attributes['clean'] = true;
+				}
 				$class_element = $this->createXMLElement('class', $attributes);
 
 				foreach ($class->getMethods() as $method) {
@@ -51,21 +57,29 @@ class PHPADD_Publisher_Xml extends PHPADD_Publisher_Abstract
 					if ($method->hasDocBlock()) {
 						$attributes['docblockline'] = $method->getDocBlockStartLine();
 					}
+					if ($method->isClean()) {
+						$attributes['clean'] = true;
+					}
 					$method_element = $this->createXMLElement('method', $attributes);
 
-					if ($method instanceof PHPADD_Result_Mess_MissingBlock) {
+					foreach ($method->getIssues() as $issue) {
 						$attributes = array ();
-						$attributes['type'] = 'missing-docblock';
-						$detail = $this->createXMLElement('detail', $attributes);
-						$method_element->appendChild($detail);
-					} else {
-						foreach ($method->getDetail() as $detail) {
-							$attributes = array ();
-							$attributes['type'] = $detail['type'];
-							$attributes['name'] = $detail['name'];
-							$detail = $this->createXMLElement('detail', $attributes);
-							$method_element->appendChild($detail);
+						$attributes['error'] = $issue->getDetailType();
+						if ($issue->getPhpIndex() !== null) {
+							$attributes['phpindex'] = $issue->getPhpIndex();
 						}
+						if ($issue->getDocIndex() !== null) {
+							$attributes['docindex'] = $issue->getDocIndex(); 
+						}
+
+						if ($issue->getParamType() !== "") {
+							$attributes['param_type'] = $issue->getParamType();
+						}
+						if ($issue->getParamName() !== "") {
+							$attributes['param_name'] = $issue->getParamName();
+						}
+						$issue = $this->createXMLElement('issue', $attributes);
+						$method_element->appendChild($issue);
 					}
 					$class_element->appendChild($method_element);
 				}
@@ -88,9 +102,10 @@ class PHPADD_Publisher_Xml extends PHPADD_Publisher_Abstract
 
 			$details_element = $this->_dom->createElement('details');
 			foreach ($method->getDetail() as $detail) {
+				print_r ($detail);
 				$attributes = array ();
-				$attributes['type'] = $detail['type'];
-				$attributes['name'] = $detail['name'];
+				$attributes['type'] = $detail->param->type;
+				$attributes['name'] = $detail->param->name;
 				$detail = $this->createXMLElement('detail', $attributes);
 				$details_element->appendChild($detail);
 			}

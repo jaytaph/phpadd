@@ -25,6 +25,7 @@
 abstract class PHPADD_Result_Mess_Abstract {
 	protected $detail;
 	protected $reflection;
+	protected $type;
 
 	public function __construct(ReflectionMethod $reflection, array $detail)
 	{
@@ -63,6 +64,18 @@ abstract class PHPADD_Result_Mess_Abstract {
 	public function getDetail()
 	{
 		return $this->detail;
+	}
+
+	private function getDetailType()
+	{
+		switch ($this->type) {
+			case 'missing-param':
+				return 'Missing parameter';
+			case 'unexpected-param':
+				return 'Unexpected parameter';
+			case 'wrong-order':
+				return 'Parameter in wrong order';
+		}
 	}
 
 	abstract public function toList();

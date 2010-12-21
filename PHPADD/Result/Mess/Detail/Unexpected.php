@@ -22,36 +22,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-class PHPADD_Publisher_Delim extends PHPADD_Publisher_Abstract
-{
-	const SEPARATOR = "\t";
-
-	public function publish(PHPADD_Result_Analysis $mess)
-	{
-		$output = "";
-		
-		foreach ($mess->getFiles() as $file) {
-			foreach ($file->getClasses() as $class) {
-				foreach ($class->getMethods() as $method) {
-					foreach ($method->getIssues() as $issue) {
-						$output .= sprintf ("%s%s" .
-											"%s:%d%s" .
-											"%s:%d%s" .
-											"%s%s" .
-											"%s%s" .
-											"%s\n",
-							$file->getName(), self::SEPARATOR,
-							$class->getName(), $class->getStartline(), self::SEPARATOR,
-							$method->getName(), $method->getStartline(), self::SEPARATOR,
-							$issue->getDetailType(), self::SEPARATOR,
-							$issue->getParamType(), self::SEPARATOR,
-							$issue->getParamName());
-					}
-				}
-			}
-		}
-
-		file_put_contents($this->destination, $output);
-	}
-
+class PHPADD_Result_Mess_Detail_Unexpected extends PHPADD_Result_Mess_Detail_Abstract {
+	protected $type = PHPADD_Result_Mess_Detail_Abstract::UNEXPECTED_PARAM;
 }

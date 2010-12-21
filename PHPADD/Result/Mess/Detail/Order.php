@@ -18,31 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @package phpadd
- * @author  Francesco Montefoschi
+ * @author  Joshua Thijssen
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-class PHPADD_Result_Mess_OutdatedBlock extends PHPADD_Result_Mess_Abstract
-{
-
-	public function toList()
-	{
-		$list = array();
-
-		foreach ($this->getDetail() as $issue) {
-			$list[] =  $this->getType($issue['type']) . ": - <code>{$issue['name']}</code>";
-		}
-
-		return $list;
-	}
-
-	private function getType($symbolic)
-	{
-		switch ($symbolic) {
-			case 'missing-param':
-				return 'Missing parameter';
-			case 'unexpected-param':
-				return 'Unexpected parameter';
-		}
-	}
+class PHPADD_Result_Mess_Detail_Order extends PHPADD_Result_Mess_Detail_Abstract {
+	protected $type = PHPADD_Result_Mess_Detail_Abstract::WRONG_ORDER;
 }

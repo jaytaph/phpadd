@@ -50,8 +50,15 @@ class PHPADD_Publisher_Html extends PHPADD_Publisher_Abstract
 
 				foreach ($class->getMethods() as $method) {
 					$output .= "\t\t\t<h3>Method: " . $method->getName().":".$method->getStartline()."</h3>" . PHP_EOL;
+					if ($method->isClean()) continue;
+
 					$output .= "\t\t\t<ul>" . PHP_EOL;
-					$output .= "\t\t\t\t<li>" . implode("</li>".PHP_EOL."\t\t\t\t<li>", $method->toList()) . '</li>' . PHP_EOL;
+					foreach ($method->getIssues() as $issue) {
+						$output .= "\t\t\t\t";
+						$output .= "<li>";
+						$output .= $issue->getDetailType()." <i>".$issue->getParamType()." ".$issue->getParamName()."</i>";
+						$output .= "</li>" . PHP_EOL;
+					}
 					$output .= "\t\t\t</ul>" . PHP_EOL;
 				}
 			}

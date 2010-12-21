@@ -34,10 +34,12 @@ class PHPADD_Stats
 	{
 		$fileNo = $mess->getCount();
 
-		list ($total, $regular, $missing, $outdated) = $this->analyze($mess);
+		list ($total, $regular, $missing, $outdated, $nodocblock, $unordered) = $this->analyze($mess);
 		$regularFreq = $this->getFrequency($regular, $total);
 		$missingFreq = $this->getFrequency($missing, $total);
 		$outdatedFreq = $this->getFrequency($outdated, $total);
+		$nodocblockFreq = $this->getFrequency($nodocblock, $total);
+		$unorderedFreq = $this->getFrequency($unordered, $total);
 
 		return array(
 			'files' => $fileNo,
@@ -46,11 +48,17 @@ class PHPADD_Stats
 			'regular' => $regular,
 			'regular-f' => $regularFreq,
 
+			'nodocblock' => $nodocblock,
+			'nodocblock-f' => $nodocblockFreq,
+
 			'missing' => $missing,
 			'missing-f' => $missingFreq,
 
-			'outdated' => $outdatedFreq,
+			'outdated' => $outdated,
 			'outdated-f' => $outdatedFreq,
+
+			'unordered' => $unordered,
+			'unordered-f' => $unorderedFreq,
 		);
 	}
 
@@ -77,17 +85,21 @@ class PHPADD_Stats
 		$regularMethods = 0;
 		$missingMethods = 0;
 		$outdatedMethods = 0;
+		$nodocblockMethods = 0;
+		$unorderedMethods = 0;
 
 		foreach ($mess->getFiles() as $file) {
 			foreach ($file->getClasses() as $class) {
 				$regularMethods += $class->getRegularBlocks();
+				$unorderedMethods += $class->getUnorderedBlocks();
 				$missingMethods += count($class->getMissingBlocks());
 				$outdatedMethods += count($class->getOutdatedBlocks());
+				$nodocblockMethods += count($class->getNodocblockBlocks());
 			}
 		}
 
-		$total = $regularMethods + $missingMethods + $outdatedMethods;
+		$total = $class->methodCount();
 
-		return array($total, $regularMethods, $missingMethods, $outdatedMethods);
+		return array($total, $regularMethods, $missingMethods, $outdatedMethods, $nodocblockMethods, $unorderedMethods);
 	}
 }
