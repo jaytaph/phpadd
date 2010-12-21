@@ -25,12 +25,10 @@
 class PHPADD_ClassFinder
 {
 	private $path;
-	private $excludes = array();
 
-	public function __construct($path, Array $excludes)
+	public function __construct($path)
 	{
 		$this->path = $path;
-		$this->excludes = $excludes;
 	}
 
 	/**
@@ -42,9 +40,7 @@ class PHPADD_ClassFinder
 	{
 		$directory = new RecursiveDirectoryIterator($this->path);
 		$iterator = new RecursiveIteratorIterator($directory);
-		$allfiles = new PHPADD_Excludefilter($iterator);
-		$allfiles->setExcludes($this->excludes);
-		$files = new RegexIterator($allfiles, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+		$files = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
 
 		$classes = array();
 

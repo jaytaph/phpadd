@@ -28,7 +28,8 @@ class PHPADD_Result_Class
 	private $reflection;
 	private $file;
 
-	function __construct(ReflectionClass $reflection) {
+	function __construct(ReflectionClass $reflection)
+	{
 		$this->reflection = $reflection;
 	}
 
@@ -44,7 +45,8 @@ class PHPADD_Result_Class
 		return $this->reflection->getName();
 	}
 
-	public function getStartline() {
+	public function getStartline()
+	{
 		return $this->reflection->getStartLine();
 	}
 

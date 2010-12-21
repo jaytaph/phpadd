@@ -26,36 +26,28 @@ class PHPADD_Detector
 {
 	protected $filter;
 
-	/**
-	 * Set the filter
-	 * 
-	 * @param bool $scanProtectedMethods
-	 * @param bool $scanPrivateMethods
-	 */
-	public function setFilter($scanProtectedMethods, $scanPrivateMethods)
+	public function __construct(PHPADD_Filter $filter)
 	{
-		$this->filter = new PHPADD_Filter($scanProtectedMethods, $scanPrivateMethods);
+		$this->filter = $filter;
 	}
 
 	/**
 	 * Get the documentation mess in a path
 	 *
 	 * @param string $path
-	 * @param array Exclude patterns
 	 * @return PHPADD_Result_Analysis
 	 */
-	public function getMess($path, Array $excludes = array())
+	public function getMess($path)
 	{
 		$mess = new PHPADD_Result_Analysis();
 
-		$finder = new PHPADD_ClassFinder($path, $excludes);
+		$finder = new PHPADD_ClassFinder($path);
 		foreach ($finder->getList() as $file => $classes) {
 			$result = new PHPADD_Result_File($file);
 
-			// $mess->includingFile($file);
 			require_once $file;
 			foreach ($classes as $class) {
-				$result->addClassResult($this->analyze($class));
+				$result->addClassResult($class, $this->analyze($class));
 			}
 
 			$mess->addFileResult($result);

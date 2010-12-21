@@ -30,15 +30,18 @@ class PHPADD_Result_File
 	public function __construct() {
 	}
 
-	public function getName() {
+	public function getName()
+	{
 		return $this->filename;
 	}
 
-	public function getCount() {
+	public function getCount()
+	{
 		return count($this->classes);
 	}
 
-	public function getClasses() {
+	public function getClasses()
+	{
 		return $this->classes;
 	}
 
@@ -49,10 +52,10 @@ class PHPADD_Result_File
 		return true;
 	}
 	
-	public function addClassResult(PHPADD_Result_Class $mess)
+	public function addClassResult($className, PHPADD_Result_Class $mess)
 	{
 		$mess->setFile($this);
-		$this->classes[] = $mess;
+		$this->classes[$className] = $mess;
 	}
 
 }

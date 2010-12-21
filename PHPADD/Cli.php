@@ -28,9 +28,8 @@ class PHPADD_Cli
 	private $skipProtected = false;
 	private $skipPrivate = false;
 	private $bootstrap = null;
-	private $publishers = null;
+	private $publishers = array();
 	private $path = null;
-	private $excludes = array();
 	
 	protected function blocksProtected()
 	{
@@ -59,10 +58,10 @@ class PHPADD_Cli
 			$this->parseParams();
 			$this->includeBootstrap();
 			
-			$detector = new PHPADD_Detector();
-			$detector->setFilter(!$this->blocksProtected(), !$this->blocksPrivate());
+			$filter = new PHPADD_Filter(!$this->blocksProtected(), !$this->blocksPrivate());
+			$detector = new PHPADD_Detector($filter);
 			
-			$mess = $detector->getMess($this->path, $this->excludes);
+			$mess = $detector->getMess($this->path);
 			foreach ($this->publishers as $publisher) {
 				$publisher->publish($mess);
 			}
@@ -81,15 +80,16 @@ class PHPADD_Cli
 			"Options:" . PHP_EOL .
 			"   --skip-protected    skips the scanning of protected methods" . PHP_EOL .
 			"   --skip-private      skips the scanning of private methods" . PHP_EOL .
-			"   --bootstrap file    includes `file` before the scan" . PHP_EOL .
-			"   --exclude pattern   excludes files matching `pattern` from scanning" . PHP_EOL .
+			"   --bootstrap <file>  includes `file` before the scan" . PHP_EOL .
 			PHP_EOL .
 			"At least one publisher must be given: ". PHP_EOL .
-			"   --publish-html file     HTML output" . PHP_EOL .
-			"   --publish-xml  file     XML output" . PHP_EOL .
-			"   --publish-delim file    Tab delimited output" . PHP_EOL;
-	}
+			"   --publish-html <file>     HTML output" . PHP_EOL .
+			"   --publish-xml  <file>     XML output" . PHP_EOL .
+			"   --publish-delim <file>    Tab delimited output" . PHP_EOL;
 
+
+	}
+	
 	private function parseParams()
 	{
 		for ($i = 1; $i < $_SERVER['argc'] -1; $i++) {
@@ -110,30 +110,18 @@ class PHPADD_Cli
 						throw new InvalidArgumentException('Not a file: ' . $this->bootstrap);
 					}
 					break;
-
-				case '--exclude':
-					$pattern = $_SERVER['argv'][++$i];
-					$this->excludes[] = $pattern;
-					break;
 				
 				case '--publish-html':
-					$class = "PHPADD_Publisher_Html";
-					$outFile = $_SERVER['argv'][++$i];
-					$this->publishers[] = new $class($outFile);
+					$this->addPublisher('Html', $_SERVER['argv'][++$i]);
 					break;
 
 				case '--publish-xml':
-					$class = "PHPADD_Publisher_Xml";
-					$outFile = $_SERVER['argv'][++$i];
-					$this->publishers[] = new $class($outFile);
+					$this->addPublisher('Xml', $_SERVER['argv'][++$i]);
 					break;
 
 				case '--publish-delim':
-					$class = "PHPADD_Publisher_Delim";
-					$outFile = $_SERVER['argv'][++$i];
-					$this->publishers[] = new $class($outFile);
+					$this->addPublisher('Delim', $_SERVER['argv'][++$i]);
 					break;
-
 
 				default:
 					throw new InvalidArgumentException('Invalid argument: ' . $param);
@@ -152,6 +140,16 @@ class PHPADD_Cli
 		if (!is_dir($this->path)) {
 			throw new InvalidArgumentException('Not a directory: ' . $this->path);
 		}
+	}
+
+	private function addPublisher($name, $outputFile)
+	{
+		$class = "PHPADD_Publisher_" . $name;
+		if ($outputFile == "-") {
+			$outputFile = "php://stdout";
+		}
+
+		$this->publishers[] = new $class($outputFile);
 	}
 
 }
