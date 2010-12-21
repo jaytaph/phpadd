@@ -27,8 +27,7 @@ class PHPADD_Result_File
 	protected $classes = array();
 	protected $filename;
 
-	public function __construct($filename) {
-		$this->filename = $filename;
+	public function __construct() {
 	}
 
 	public function getName() {
@@ -52,6 +51,7 @@ class PHPADD_Result_File
 	
 	public function addClassResult(PHPADD_Result_Class $mess)
 	{
+		$mess->setFile($this);
 		$this->classes[] = $mess;
 	}
 

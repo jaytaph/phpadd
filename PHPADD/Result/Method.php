@@ -28,13 +28,16 @@ class PHPADD_Result_Method {
 	protected $type;
 	protected $class;
 
-	public function __construct(PHPADD_Result_Class $class, ReflectionMethod $reflection, array $issues)
+	public function __construct(ReflectionMethod $reflection, array $issues)
 	{
-		$this->class = $class;
 		$this->reflection = $reflection;
 		$this->issues = $issues;
 	}
 
+	public function setClass(PHPADD_Result_Class $class) {
+		$this->class = $class;
+	}
+	
 	public function getClass() {
 		return $this->class;
 	}
