@@ -33,8 +33,11 @@ abstract class PHPADD_Result_Mess_Detail_Abstract {
 	protected $doc_index = null;
 	protected $param_name = "";
 	protected $param_type = "";
+	protected $method;
 
-	public function __construct($php_index, $doc_index, stdClass $param) {
+	public function __construct(PHPADD_Result_Method $method, $php_index, $doc_index, stdClass $param) {
+		$this->method = $method;
+
 		$this->php_index = $php_index;
 		$this->doc_index = $doc_index;
 		if (isset($param->name)) {
@@ -43,6 +46,10 @@ abstract class PHPADD_Result_Mess_Detail_Abstract {
 		if (isset($param->type)) {
 			$this->param_type = $param->type;
 		}
+	}
+
+	public function getMethod() {
+		return $this->method;
 	}
 
 	public function getType() {

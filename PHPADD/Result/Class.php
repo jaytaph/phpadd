@@ -26,9 +26,15 @@ class PHPADD_Result_Class
 {
 	private $methods = array();
 	private $reflection;
+	private $file;
 
-	function __construct(ReflectionClass $reflection) {
+	function __construct(PHPADD_Result_File $file, ReflectionClass $reflection) {
+		$this->file = $file;
 		$this->reflection = $reflection;
+	}
+
+	public function getFile() {
+		return $this->file;
 	}
 
 	public function getName() {
