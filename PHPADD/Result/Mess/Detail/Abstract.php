@@ -45,6 +45,10 @@ abstract class PHPADD_Result_Mess_Detail_Abstract {
 		}
 	}
 
+	public function getType() {
+		return $this->type;
+	}
+
 	public function getParamName() {
 		return $this->param_name;
 	}
