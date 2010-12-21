@@ -36,7 +36,21 @@ class Fixture_InvalidMultiExample
 	public function invalidMethod(stdClass $my) {}
 }
 
-class Fixture_NodobBLock
+class Fixture_SwitchedExample
+{
+	/**
+	 * Some description here
+	 *
+	 * @param mixed $var1
+	 * @param mixed $var2
+	 * @param mixed $var3
+	 * @return string
+	 */
+	public function invalidMethod($var3, $var2, $var1) {}
+}
+
+
+class Fixture_NodocBLock
 {
 	public function invalidMethod(stdClass $my) {}
 }
