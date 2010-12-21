@@ -52,7 +52,7 @@ class PHPADD_Parser
 
 			$issues = array();
 			if ($this->isDocBlockMissing($method)) {
-				$issues[] = new PHPADD_Result_Mess_Detail_Docblock(null, null, new StdClass());
+				$issues[] = new PHPADD_Result_Issue_Docblock(null, null, new StdClass());
 			} else {
 				$issues = $this->validateDocBlock($method);
 			}
@@ -143,7 +143,7 @@ class PHPADD_Parser
 				{
 					// Found the correct parameter, but still need to find out if it's in the right order..
 					if ($phpIndex != $docIndex) {
-						$issues[] = new PHPADD_Result_Mess_Detail_Order($phpIndex, $docIndex, $phpParam); 
+						$issues[] = new PHPADD_Result_Issue_Order($phpIndex, $docIndex, $phpParam);
 						break;
 					}
 					$found = true;
@@ -152,7 +152,7 @@ class PHPADD_Parser
 			}
 
 			if (! $found) {
-				$issues[] = new PHPADD_Result_Mess_Detail_Missing($phpIndex, null, $phpParam);
+				$issues[] = new PHPADD_Result_Issue_Missing($phpIndex, null, $phpParam);
 			}
 		}
 
@@ -167,7 +167,7 @@ class PHPADD_Parser
 			}
 
 			if (! $found) {
-				$issues[] = new PHPADD_Result_Mess_Detail_Unexpected(null, $docIndex, $docParam);
+				$issues[] = new PHPADD_Result_Issue_Unexpected(null, $docIndex, $docParam);
 			}
 		}
 

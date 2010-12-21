@@ -22,6 +22,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-class PHPADD_Result_Mess_Detail_Order extends PHPADD_Result_Mess_Detail_Abstract {
-	protected $type = PHPADD_Result_Mess_Detail_Abstract::WRONG_ORDER;
+class PHPADD_Result_Issue_Docblock extends PHPADD_Result_Issue {
+	protected $type = PHPADD_Result_Issue::MISSING_DOCBLOCK;
 }

@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-abstract class PHPADD_Result_Mess_Detail_Abstract {
+abstract class PHPADD_Result_Issue {
 	const MISSING_DOCBLOCK  = 0;
 	const MISSING_PARAM     = 1;
 	const UNEXPECTED_PARAM  = 2;
@@ -74,13 +74,13 @@ abstract class PHPADD_Result_Mess_Detail_Abstract {
 	public function getDetailType()
 	{
 		switch ($this->type) {
-			case PHPADD_Result_Mess_Detail_Abstract::MISSING_PARAM :
+			case PHPADD_Result_Issue::MISSING_PARAM :
 				return 'Missing parameter';
-			case PHPADD_Result_Mess_Detail_Abstract::UNEXPECTED_PARAM :
+			case PHPADD_Result_Issue::UNEXPECTED_PARAM :
 				return 'Unexpected parameter';
-			case PHPADD_Result_Mess_Detail_Abstract::WRONG_ORDER :
+			case PHPADD_Result_Issue::WRONG_ORDER :
 				return 'Parameter in wrong order';
-			case PHPAdd_Result_Mess_Detail_Abstract::MISSING_DOCBLOCK :
+			case PHPAdd_Result_Issue::MISSING_DOCBLOCK :
 				return 'No docblock found';
 		}
 	}

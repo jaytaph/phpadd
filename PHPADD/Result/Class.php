@@ -65,22 +65,22 @@ class PHPADD_Result_Class
 
 	public function getMissingBlocks()
 	{
-		return $this->_getBlocks(PHPADD_Result_Mess_Detail_Abstract::MISSING_PARAM);
+		return $this->_getBlocks(PHPADD_Result_Issue::MISSING_PARAM);
 	}
 
 	public function getOutdatedBlocks()
 	{
-		return $this->_getBlocks(PHPADD_Result_Mess_Detail_Abstract::UNEXPECTED_PARAM);
+		return $this->_getBlocks(PHPADD_Result_Issue::UNEXPECTED_PARAM);
 	}
 
 	public function getUnorderedBlocks()
 	{
-		return $this->_getBlocks(PHPADD_Result_Mess_Detail_Abstract::WRONG_ORDER);
+		return $this->_getBlocks(PHPADD_Result_Issue::WRONG_ORDER);
 	}
 
 	public function getNodocblockBlocks()
 	{
-		return $this->_getBlocks(PHPADD_Result_Mess_Detail_Abstract::MISSING_DOCBLOCK);
+		return $this->_getBlocks(PHPADD_Result_Issue::MISSING_DOCBLOCK);
 	}
 	
 	public function getRegularBlocks()
