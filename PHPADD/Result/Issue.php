@@ -22,7 +22,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-abstract class PHPADD_Result_Issue {
+abstract class PHPADD_Result_Issue
+{
 	const MISSING_DOCBLOCK  = 0;
 	const MISSING_PARAM     = 1;
 	const UNEXPECTED_PARAM  = 2;
@@ -35,7 +36,8 @@ abstract class PHPADD_Result_Issue {
 	protected $param_type = "";
 	protected $method;
 
-	public function __construct($php_index, $doc_index, stdClass $param) {
+	public function __construct($php_index, $doc_index, stdClass $param)
+	{
 		$this->php_index = $php_index;
 		$this->doc_index = $doc_index;
 		if (isset($param->name)) {
@@ -47,27 +49,38 @@ abstract class PHPADD_Result_Issue {
 	}
 
 
-	public function setMethod(PHPADD_Result_Method $method) {
+	public function setMethod(PHPADD_Result_Method $method)
+	{
 		$this->method = $method;
 	}
-	public function getMethod() {
+
+	public function getMethod()
+	{
 		return $this->method;
 	}
 
-	public function getType() {
+	public function getType()
+	{
 		return $this->type;
 	}
 
-	public function getParamName() {
+	public function getParamName()
+	{
 		return $this->param_name;
 	}
-	public function getParamType() {
+
+	public function getParamType()
+	{
 		return $this->param_type;
 	}
-	public function getPhpIndex() {
+
+	public function getPhpIndex()
+	{
 		return $this->php_index;
 	}
-	public function getDocIndex() {
+
+	public function getDocIndex()
+	{
 		return $this->doc_index;
 	}
 
@@ -82,6 +95,8 @@ abstract class PHPADD_Result_Issue {
 				return 'Parameter in wrong order';
 			case PHPAdd_Result_Issue::MISSING_DOCBLOCK :
 				return 'No docblock found';
+			default :
+				return "Unknown type";
 		}
 	}
 }

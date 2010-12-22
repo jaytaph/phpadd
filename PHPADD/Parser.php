@@ -156,7 +156,6 @@ class PHPADD_Parser
 			}
 		}
 
-
 		foreach ($docParams as $docIndex => $docParam) {
 			$found = false;
 			foreach ($phpParams as $phpIndex => $phpParam) {

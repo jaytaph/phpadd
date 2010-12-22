@@ -31,5 +31,5 @@ abstract class PHPADD_Publisher_Abstract
 		$this->destination = $argument;
 	}
 
-	abstract public function publish(PHPADD_Result_Analysis $mess);	
+	abstract public function publish(PHPADD_Result_Analysis $mess);
 }

@@ -22,7 +22,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-class PHPADD_Result_Method {
+class PHPADD_Result_Method
+{
 	protected $issues;
 	protected $reflection;
 	protected $type;
@@ -34,11 +35,13 @@ class PHPADD_Result_Method {
 		$this->issues = $issues;
 	}
 
-	public function setClass(PHPADD_Result_Class $class) {
+	public function setClass(PHPADD_Result_Class $class)
+	{
 		$this->class = $class;
 	}
 	
-	public function getClass() {
+	public function getClass()
+	{
 		return $this->class;
 	}
 
@@ -52,7 +55,8 @@ class PHPADD_Result_Method {
 		return (! empty ($docBlock));
 	}
 
-	public function getDocBlockStartLine() {
+	public function getDocBlockStartLine()
+	{
 		/*
 		 * @TODO: the start line for docblocks can be incorrect
 		 * This is a very rude check of getting the start line for docblocks.
@@ -66,7 +70,8 @@ class PHPADD_Result_Method {
 		return $this->reflection->getStartLine() - $lc - 1;
 	}
 
-	public function getStartLine() {
+	public function getStartLine()
+	{
 		return $this->reflection->getStartLine();
 	}
 
@@ -79,5 +84,4 @@ class PHPADD_Result_Method {
 		return (count($this->issues) == 0);
 	}
 
-//	abstract public function toList();
 }

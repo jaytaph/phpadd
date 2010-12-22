@@ -66,7 +66,8 @@ class PHPADD_ClassFinder
 		return $classes;
 	}
 
-	private function getNextClass(array $tokens, $i) {
+	private function getNextClass(array $tokens, $i)
+	{
 		for ($i; $i < count($tokens); $i++) {
 			if ($tokens[$i][0] == T_STRING) {
 				return $tokens[$i][1];

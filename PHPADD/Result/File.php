@@ -27,9 +27,6 @@ class PHPADD_Result_File
 	protected $classes = array();
 	protected $filename;
 
-	public function __construct() {
-	}
-
 	public function getName()
 	{
 		return $this->filename;
@@ -45,7 +42,8 @@ class PHPADD_Result_File
 		return $this->classes;
 	}
 
-	public function isClean() {
+	public function isClean()
+	{
 		foreach ($this->getClasses() as $class) {
 			if (! $class->isClean()) return false;
 		}

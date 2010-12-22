@@ -22,6 +22,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html  GNU GPL 3.0
  */
 
-class PHPADD_Result_Issue_Order extends PHPADD_Result_Issue {
+class PHPADD_Result_Issue_Order extends PHPADD_Result_Issue
+{
 	protected $type = PHPADD_Result_Issue::WRONG_ORDER;
 }

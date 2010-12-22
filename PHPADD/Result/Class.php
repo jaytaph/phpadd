@@ -33,15 +33,18 @@ class PHPADD_Result_Class
 		$this->reflection = $reflection;
 	}
 
-	public function setFile(PHPADD_Result_File $file) {
+	public function setFile(PHPADD_Result_File $file)
+    {
 		$this->file = $file;
 	}
 
-	public function getFile() {
+	public function getFile()
+    {
 		return $this->file;
 	}
 
-	public function getName() {
+	public function getName()
+    {
 		return $this->reflection->getName();
 	}
 
@@ -96,7 +99,8 @@ class PHPADD_Result_Class
 //		return $count;
 	}
 
-	protected function _getBlocks($type) {
+	protected function _getBlocks($type)
+	{
 		$issues = array();
 		foreach ($this->methods as $method) {
 			foreach ($method->getIssues() as $issue) {
